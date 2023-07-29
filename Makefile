@@ -1,7 +1,7 @@
 # Variables
-EXTENSION_NAME = "[NAME]"
+EXTENSION_NAME = "detectron2deploy"
 DOCKER_IMAGE = ${EXTENSION_NAME}:latest
-PORT = 8077
+PORT = 8346
 
 # Phony targets
 .PHONY: docker docker-build docker-run
