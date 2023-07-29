@@ -3,12 +3,13 @@ import io
 import json
 import modal
 
-stub = modal.Stub("run-detectron2")
-
 DISPATCHER_URL = "DISPATCHER_URL_"
 TOKEN = "TOKEN_"
 bucket = "bucket_"
 key = "key_"
+name = "name_"
+
+stub = modal.Stub(f"run-detectron-{name}")
 
 config = """CUDNN_BENCHMARK: false
 DATALOADER:
