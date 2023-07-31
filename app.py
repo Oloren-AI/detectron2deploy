@@ -11,7 +11,13 @@ def hello():
 
 
 @olo.register()
-def deploy(model = olo.Json(), log_message=print):
+def deploy(model = olo.Json(), creds=olo.String(), log_message=print):
+    creds = json.loads(creds)
+    with open("/root/.modal.toml", "w+") as f:
+        f.write("[default]\n")
+        f.write(f"""token_id = "{creds['token_id']}"\n""")
+        f.write(f"""token_secret = "{creds['token_secret']}" """)
+        
     bucket_ = model["url"].split("/")[2].split(".")[0]
     key_ = model["url"].split("/")[3].split("?")[0]
     name_ = str(hash(bucket_ + key_))
@@ -32,7 +38,13 @@ def deploy(model = olo.Json(), log_message=print):
     return name_
 
 @olo.register()
-def run(image = olo.File(), name = olo.String()):
+def run(image = olo.File(), name = olo.String(), creds=olo.String()):
+    creds = json.loads(creds)
+    with open("/root/.modal.toml", "w+") as f:
+        f.write("[default]\n")
+        f.write(f"""token_id = "{creds['token_id']}"\n""")
+        f.write(f"""token_secret = "{creds['token_secret']}" """)
+        
     import modal
     
     f = modal.Function.lookup(f"run-detectron-{name}", "Detectron2.predict")
