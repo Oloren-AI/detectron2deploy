@@ -11,7 +11,7 @@ def hello():
 
 
 @olo.register()
-def deploy(model = olo.Json(), creds=olo.String(), log_message=print):
+def deploy(model = olo.Json(), creds=olo.String(), name=olo.String(), log_message=print):
     creds = json.loads(creds)
     with open("/root/.modal.toml", "w+") as f:
         f.write("[default]\n")
@@ -20,7 +20,7 @@ def deploy(model = olo.Json(), creds=olo.String(), log_message=print):
         
     bucket_ = model["url"].split("/")[2].split(".")[0]
     key_ = model["url"].split("/")[3].split("?")[0]
-    name_ = str(hash(bucket_ + key_))
+    name_ = name
     print(bucket_, key_, name_)
     DISPATCHER_URL_ = log_message.dispatcher_url
     TOKEN_ = log_message.token
