@@ -13,7 +13,8 @@ def hello():
 @olo.register()
 def deploy(model = olo.Json(), creds=olo.String(), name=olo.String(), log_message=print):
     creds = json.loads(creds)
-    os.system(f"""MODAL_CONFIG_PATH=/.modal.toml modal token set --token-id="{creds['token_id']}" --token-secret="{creds['token_secret']}" --no-verify""")
+    os.environ["MODAL_TOKEN_ID"] = creds["token_id"]
+    os.environ["MODAL_TOKEN_SECRET"] = creds["token_secret"]
     
     bucket_ = model["url"].split("/")[2].split(".")[0]
     key_ = model["url"].split("/")[3].split("?")[0]
@@ -26,7 +27,7 @@ def deploy(model = olo.Json(), creds=olo.String(), name=olo.String(), log_messag
     # replace the strings into the file
     os.system(f"sed -i 's/bucket_/{bucket_}/g' {os.path.join(cwd, 'detectron2modal.py')}")
     os.system(f"sed -i 's/key_/{key_}/g' {os.path.join(cwd, 'detectron2modal.py')}")
-    os.system(f"sed -i 's/DISPATCHER_URL_/{DISPATCHER_URL_}/g' {os.path.join(cwd, 'detectron2modal.py')}")
+    os.system(f"sed -i 's|DISPATCHER_URL_|{DISPATCHER_URL_}|g' {os.path.join(cwd, 'detectron2modal.py')}")
     os.system(f"sed -i 's/TOKEN_/{TOKEN_}/g' {os.path.join(cwd, 'detectron2modal.py')}")
     os.system(f"sed -i 's/name_/{name_}/g' {os.path.join(cwd, 'detectron2modal.py')}")
     os.system(f"MODAL_CONFIG_PATH=/.modal.toml modal deploy detectron2modal.py")
@@ -36,8 +37,9 @@ def deploy(model = olo.Json(), creds=olo.String(), name=olo.String(), log_messag
 @olo.register()
 def run(image = olo.File(), name = olo.String(), creds=olo.String()):
     creds = json.loads(creds)
-    os.system(f"""MODAL_CONFIG_PATH=/.modal.toml modal token set --token-id="{creds['token_id']}" --token-secret="{creds['token_secret']}" --no-verify""")
-    os.environ["MODAL_CONFIG_PATH"] = "/.modal.toml"
+    os.environ["MODAL_TOKEN_ID"] = creds["token_id"]
+    os.environ["MODAL_TOKEN_SECRET"] = creds["token_secret"]
+    
     import modal
     name = name.split("/")[-1]
     f = modal.Function.lookup(f"run-detectron-{name}", "Detectron2.predict")
