@@ -13,11 +13,11 @@ def hello():
 @olo.register()
 def deploy(model = olo.Json(), creds=olo.String(), name=olo.String(), log_message=print):
     creds = json.loads(creds)
-    os.system(f"""modal token set --token_id="{creds['token_id']}" --token_secret="{creds['token_secret']}" --no-verify""")
+    os.system(f"""modal token set --token-id="{creds['token_id']}" --token-secret="{creds['token_secret']}" --no-verify""")
     
     bucket_ = model["url"].split("/")[2].split(".")[0]
     key_ = model["url"].split("/")[3].split("?")[0]
-    name_ = name
+    name_ = name.split("/")[-1]
     print(bucket_, key_, name_)
     DISPATCHER_URL_ = log_message.dispatcher_url
     TOKEN_ = log_message.token
@@ -36,10 +36,10 @@ def deploy(model = olo.Json(), creds=olo.String(), name=olo.String(), log_messag
 @olo.register()
 def run(image = olo.File(), name = olo.String(), creds=olo.String()):
     creds = json.loads(creds)
-    os.system(f"""modal token set --token_id="{creds['token_id']}" --token_secret="{creds['token_secret']}" --no-verify""")
+    os.system(f"""modal token set --token-id="{creds['token_id']}" --token-secret="{creds['token_secret']}" --no-verify""")
     
     import modal
-    
+    name = name.split("/")[-1]
     f = modal.Function.lookup(f"run-detectron-{name}", "Detectron2.predict")
     
     with open(image, "rb") as f_:

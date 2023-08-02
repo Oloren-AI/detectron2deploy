@@ -11,6 +11,8 @@ name = "name_"
 
 stub = modal.Stub(f"run-detectron-{name}")
 
+print("Stub created ", f"run-detectron-{name}")
+
 config = """CUDNN_BENCHMARK: false
 DATALOADER:
   ASPECT_RATIO_GROUPING: true
@@ -380,7 +382,7 @@ class Detectron2:
             
         cfg = get_cfg()
         cfg.merge_from_file("config.yaml")
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8  # set threshold for this model
+        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.1  # set threshold for this model
         cfg.MODEL.WEIGHTS = "/vol/cache/model_final.pth"
         self.predictor = DefaultPredictor(cfg)
 
